@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "227304964746",
+    "project_id": "darra-cozy",
+    "storage_bucket": "darra-cozy.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:227304964746:android:6247c53fbeec05770b2373",
+        "android_client_info": {
+          "package_name": "com.example.cozy_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBJ-tzQPuNlqARdZIhhVCzEcW04pKslbWM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
