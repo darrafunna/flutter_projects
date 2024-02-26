@@ -6,11 +6,19 @@ import 'package:cozy_app/widgets/rating_item.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class DetailPage extends StatelessWidget {
+class DetailPage extends StatefulWidget {
 
   final Space space;
 
   DetailPage(this.space);
+
+  @override
+  State<DetailPage> createState() => _DetailPageState();
+}
+
+class _DetailPageState extends State<DetailPage> {
+
+  bool isClicked = false;
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +29,7 @@ class DetailPage extends StatelessWidget {
         child: Stack(
           children: [
             Image.network(
-              space.imageUrl,
+              widget.space.imageUrl,
               width: MediaQuery.of(context).size.width,
               height: 350,
               fit: BoxFit.cover,
@@ -57,7 +65,7 @@ class DetailPage extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  space.name,
+                                  widget.space.name,
                                   style: blackTextStyle.copyWith(
                                     fontSize: 22,
                                   ),
@@ -67,7 +75,7 @@ class DetailPage extends StatelessWidget {
                                 ),
                                 Text.rich(
                                   TextSpan(
-                                    text: '\$${space.price}',
+                                    text: '\$${widget.space.price}',
                                     style: purpleTextStyle.copyWith(
                                       fontSize: 16,
                                     ),
@@ -91,7 +99,7 @@ class DetailPage extends StatelessWidget {
                                   ),
                                   child: RatingItem(
                                     index: index, 
-                                    rating: space.rating
+                                    rating: widget.space.rating
                                     ),
                                 );
                               }).toList(),
@@ -127,17 +135,17 @@ class DetailPage extends StatelessWidget {
                             FacilityItem(
                               name: 'Kitchen',
                               imageUrl: 'assets/icon_bar_counter.png',
-                              total: space.numberOfKitchens,
+                              total: widget.space.numberOfKitchens,
                             ),
                             FacilityItem(
                               name: 'Bedroom',
                               imageUrl: 'assets/icon_double_bed.png',
-                              total: space.numberOfBedrooms,
+                              total: widget.space.numberOfBedrooms,
                             ),
                             FacilityItem(
                               name: 'Big Lemari',
                               imageUrl: 'assets/icon_cupboard.png',
-                              total: space.numberOfCupboards,
+                              total: widget.space.numberOfCupboards,
                             ),
                           ],
                         ),
@@ -165,7 +173,7 @@ class DetailPage extends StatelessWidget {
                         child: ListView(
                           scrollDirection: Axis.horizontal,
                           children:
-                            space.photos.map((item){
+                            widget.space.photos.map((item){
                               return Container(
                                 margin: EdgeInsets.only(
                                   left: 24
@@ -257,7 +265,7 @@ class DetailPage extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              space.address,
+                              widget.space.address,
                               style: greyTextStyle,
                             ),
                             InkWell(
@@ -265,7 +273,7 @@ class DetailPage extends StatelessWidget {
                                   // const link = "https://goo.gl/maps/SyZx2yjWB1yR6AeH8";
                                   // // const link = "qwertyuiop";
                                   // const linkError = "qwertyuiop";
-                                  String? link = space.mapUrl;
+                                  String? link = widget.space.mapUrl;
                                   bool _validURL = Uri.parse(link).isAbsolute;
 
                                   if (link.isNotEmpty && _validURL == true) {
@@ -299,14 +307,36 @@ class DetailPage extends StatelessWidget {
                         height: 50,
                         width: MediaQuery.of(context).size.width - (2 * edge),
                         child: ElevatedButton(
-                          onPressed: () {
-                            launchUrl(
-                              Uri(
-                                scheme: 'tel',
-                                path: space.phone
-                              )
-                            );
-                          },
+                          // onPressed: () {
+                          //   launchUrl(
+                          //     Uri(
+                          //       scheme: 'tel',
+                          //       path: widget.space.phone
+                          //     )
+                          //   );
+                          // },
+                          onPressed: () => showDialog<String>(
+                            context: context,
+                            builder: (BuildContext context) => AlertDialog(
+                              title: const Text('Konfirmasi'),
+                              content: const Text('Apakah kamu ingin menghubungi pemilik kos?'),
+                              actions: <Widget>[
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context, 'Batal'),
+                                  child: const Text('Batal'),
+                                ),
+                                TextButton(
+                                  onPressed: () => launchUrl(
+                                                    Uri(
+                                                      scheme: 'tel',
+                                                      path: widget.space.phone
+                                                    )
+                                                  ),
+                                  child: const Text('Hubungi'),
+                                ),
+                              ],
+                            ), 
+                            ),
                           style: ButtonStyle(
                               backgroundColor:
                                   MaterialStateProperty.all(purpleColor),
@@ -348,9 +378,16 @@ class DetailPage extends StatelessWidget {
                       width: 40,
                     ),
                   ),
-                  Image.asset(
-                    'assets/btn_wishlist.png',
-                    width: 40,
+                  InkWell(
+                    onTap: (){
+                      setState((){
+                        isClicked = !isClicked;
+                      });
+                    },
+                    child: Image.asset(
+                      isClicked ? 'assets/btn_wishlist_fill.png' : 'assets/btn_wishlist.png',
+                      width: 40,
+                    ),
                   ),
                 ],
               ),
